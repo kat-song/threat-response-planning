@@ -107,7 +107,7 @@ const Dashboard = () => {
 
           {/* Threat & Environment */}
           <div className="tablet:grid-col-8">
-            <Card>
+            <Card style={{listStyle: "none"}}>
               <CardHeader>
                 <h2 className="usa-card__heading">Threat & Environment</h2>
               </CardHeader>
@@ -126,7 +126,7 @@ const Dashboard = () => {
 
           {/* Live Summary */}
           <div className="tablet:grid-col-4">
-            <Card>
+            <Card style={{listStyle: "none"}}>
               <CardHeader>
                 <h2 className="usa-card__heading">Live Summary</h2>
               </CardHeader>
@@ -144,7 +144,7 @@ const Dashboard = () => {
         </div>
 
         {/* FORCE ALLOCATION */}
-        <Card className="margin-bottom-5">
+        <Card style={{listStyle: "none"}}>
           <CardHeader>
             <h2 className="usa-card__heading">Force Allocation</h2>
           </CardHeader>
@@ -170,7 +170,7 @@ const Dashboard = () => {
         </Card>
 
         {/* OPERATIONAL CAPABILITY SCORES */}
-        <Card className="margin-bottom-5">
+        <Card style={{listStyle: "none"}}>
           <CardHeader>
             <h2 className="usa-card__heading">Operational Capability Scores</h2>
           </CardHeader>
