@@ -13,6 +13,22 @@
   }
 }
 
+:root[data-theme="light"] {
+  --app-bg: #ffffff;
+  --app-text: #1b1b1b;
+}
+
+:root[data-theme="dark"] {
+  --app-bg: #0b0f1a;
+  --app-text: #f1f1f1;
+}
+
+.App {
+  background: var(--app-bg);
+  color: var(--app-text);
+  min-height: 100vh;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;

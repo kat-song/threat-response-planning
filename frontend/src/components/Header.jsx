@@ -1,9 +1,7 @@
-import { Button, GovBanner, Grid, NavMenuButton, Title, Header as USWDSHeader } from '@trussworks/react-uswds';
-import { useEffect } from 'react';
-import { useMediaQuery } from 'react-responsive';
+import { Button, GovBanner, NavMenuButton, Title, Header as USWDSHeader } from '@trussworks/react-uswds';
 import { Link } from 'react-router';
 import { styled, useTheme } from 'styled-components';
-// import UserInfo from '@/components/UserInfo';
+import { useThemeContext } from '../context/Theme';
 
 const UserInfoContainer = styled.div`
   display: none;
@@ -63,6 +61,9 @@ const StyledTitle = styled(Title)`
 
 const StyledUSWDSHeader = styled(USWDSHeader)`
   border-bottom: 1px solid ${(props) => props.theme?.colors?.bg.baseLight};
+  background-color: ${(props) =>
+    props.$isDark ? props.theme?.colors?.bg.baseDarkest : props.theme?.colors?.bg.baseDarker};
+  transition: background-color 200ms ease, border-color 200ms ease;
 
   @media (width >= 1024px) {
     display: block;
@@ -84,6 +85,9 @@ const StyledImg = styled.img`
 
 const StyledContainer = styled.div`
   z-index: 2;
+  background-color: ${(props) =>
+    props.$isDark ? props.theme?.colors?.bg.baseDarkest : props.theme?.colors?.bg.baseDarker};
+  transition: background-color 200ms ease;
 `;
 
 const StyledLink = styled(Link)`
@@ -94,14 +98,46 @@ const StyledNavbar = styled.div`
   border: 0;
 `;
 
+const ToggleButton = styled(Button)`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid ${(props) => props.theme?.colors?.bg.base};
+  background: ${(props) => props.theme?.colors?.bg.baseLightest};
+  color: ${(props) => props.theme?.colors?.text.baseDarkest};
+  font-size: 0.85rem;
+  line-height: 1.1;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+
+  &:hover {
+    background: ${(props) => props.theme?.colors?.primaryLightest};
+    border-color: ${(props) => props.theme?.colors?.primary};
+  }
+`;
+
+const ToggleDot = styled.span`
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: ${(props) =>
+    props.$isDark ? props.theme?.colors?.primary : props.theme?.colors?.bg.base};
+  border: 1px solid ${(props) => props.theme?.colors?.primaryDark};
+`;
+
 const Header = () => {
-    const isDesktop = useMediaQuery({ query: '(min-width: 1024px)' });
     const theme = useTheme();
+    const { themeName, toggleTheme } = useThemeContext();
+    const isDark = themeName === 'dark';
+    const logoSrc = isDark ? '/DOW-Logo-Dark.png' : '/DOW-Logo-Light.png';
 
     return (
-        <StyledContainer>
+        <StyledContainer $isDark={isDark}>
             <GovBanner tld=".gov" language={'english'} />
-            <StyledUSWDSHeader basic={true}>
+            <StyledUSWDSHeader basic={true} $isDark={isDark}>
                 <div className="usa-nav-container grid-col-fill display-flex">
                     <StyledNavbar className="usa-navbar">
                         <StyledTitle>
@@ -110,28 +146,33 @@ const Header = () => {
                                     {
                                         <StyledImg
                                             className="width-100 desktop:width-100 text-bottom margin-right-05"
-                                            src={`/DOW-Logo.png`}
-                                            alt="Site logo"
+                                            src={logoSrc}
+                                            alt="Department of Workforce logo"
                                         />
                                     }
                                 </span>
-                                {/* <Grid col className="margin-top-neg-2px">
-                                    <Grid row>
-                                        <TitleSpan className="font-ui-sm flex-fill text-light">Title</TitleSpan>
-                                    </Grid>
-                                    <Grid row>
-                                        <SubtitleSpan className="text-light">Subtitle</SubtitleSpan>
-                                    </Grid>
-                                </Grid> */}
                             </StyledLink>
                         </StyledTitle>
                         <NavMenuButton label={'Menu'} />
                     </StyledNavbar>
-                    <div className="usa-navbar__secondary margin-left-auto margin-bottom-2px">
-                        {/* <UserInfoContainer>
-                            <UserInfo />
-                        </UserInfoContainer> */}
-                        <StyledMenu>
+                    <div className="usa-navbar__secondary margin-left-auto margin-bottom-2px display-flex flex-align-center">
+                        <UserInfoContainer>
+                            <ToggleButton type="button" unstyled onClick={toggleTheme} aria-label="Toggle color theme">
+                                <ToggleDot $isDark={isDark} />
+                                <span>{isDark ? 'Dark' : 'Light'} mode</span>
+                            </ToggleButton>
+                        </UserInfoContainer>
+                        <StyledMenu className="display-flex flex-align-center">
+                            <ToggleButton
+                                type="button"
+                                unstyled
+                                onClick={toggleTheme}
+                                aria-label="Toggle color theme (mobile)"
+                                style={{ marginRight: 8 }}
+                            >
+                                <ToggleDot $isDark={isDark} />
+                                <span>{isDark ? 'Dark' : 'Light'}</span>
+                            </ToggleButton>
                             <Button type="button" title="toggle menu" unstyled>
                                 <svg
                                     className="usa-icon"
