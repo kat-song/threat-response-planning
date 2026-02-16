@@ -25,6 +25,29 @@ The system trains separate models for each threat type (Cyber, Missile, Hybrid, 
 | Air         | 19         | 97.41%   | 93.06%            |
 | Naval       | 21         | 92.06%   | 100.00%           |
 
+### Evaluation Results (Train/Test Performance)
+
+**Overall Performance:**
+- **Train Set:** 93.25% accuracy, 94.39% precision, 97.71% recall
+- **Test Set:** 93.00% accuracy, 95.07% precision, 96.89% recall
+- **Generalization Gap:** Only 0.25% accuracy drop (excellent generalization!)
+
+**Per-Threat-Type Test Accuracy:**
+| Threat Type | Test Accuracy | Test Precision | Test Recall |
+|-------------|--------------|----------------|-------------|
+| Air         | **95.65%**   | 96.13%        | 99.33%      |
+| Naval       | 93.66%       | 95.24%        | 97.56%      |
+| Hybrid      | 92.11%       | 93.75%        | 96.77%      |
+| Cyber       | 91.49%       | 96.34%        | 94.05%      |
+| Missile     | 89.89%       | 93.24%        | 94.52%      |
+
+**Key Findings:**
+- All models exceed 89% test accuracy with minimal overfitting
+- High recall (96.89%) indicates models rarely miss successful responses
+- High precision (95.07%) means predicted successes are highly reliable
+- Air threat model performs best (95.65% test accuracy)
+- See [EVALUATION_REPORT.md](EVALUATION_REPORT.md) for detailed analysis
+
 ## Setup and Installation
 
 ### 1. Install Dependencies
@@ -220,8 +243,12 @@ Values closer to 1.0 indicate higher model certainty.
 
 - `main.py` - FastAPI inference server
 - `train_models.py` - Model training script
+- `evaluate_models.py` - Comprehensive model evaluation on train/test sets
+- `visualize_results.py` - Generate performance visualization charts
 - `test_inference.py` - Test script for validating the API
 - `requirements.txt` - Python dependencies
+- `README.md` - This documentation file
+- `EVALUATION_REPORT.md` - Detailed evaluation report with analysis
 - `models/` - Directory containing trained model files (created by train_models.py)
   - `cyber_model.pkl`
   - `missile_model.pkl`
@@ -229,6 +256,27 @@ Values closer to 1.0 indicate higher model certainty.
   - `air_model.pkl`
   - `naval_model.pkl`
   - `model_summary.pkl`
+  - `evaluation_results.csv` - Raw evaluation metrics
+  - `evaluation_visualizations.png` - Performance charts
+
+### Running Evaluation
+
+To evaluate the trained models on train and test datasets:
+
+```bash
+# Run comprehensive evaluation
+python evaluate_models.py
+
+# Generate visualizations
+python visualize_results.py
+```
+
+This will:
+- Test all models on both training and test sets
+- Calculate accuracy, precision, and recall for each threat type
+- Generate confusion matrices
+- Save results to `models/evaluation_results.csv`
+- Create visualization charts in `models/evaluation_visualizations.png`
 
 ## Notes
 
