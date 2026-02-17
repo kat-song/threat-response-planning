@@ -1,8 +1,12 @@
 import { useState } from "react";
+
+import { runInference } from "../services/api";
+import { threatFields, forceFields, capabilityFields } from "../data/fields";
+
 import { useTheme } from "styled-components";
 import styled from "styled-components";
-import { TextInput, Select, Button, Alert } from "@trussworks/react-uswds";
-import { runInference } from "../services/api";
+import { TextInput, Select, Button } from "@trussworks/react-uswds";
+import { InfoTooltip } from "../components/InfoTooltip";
 
 const Panel = styled.div`
   background: ${(props) => props.$surface};
@@ -89,9 +93,15 @@ const Dashboard = () => {
                 <label
                     className="usa-label margin-top-0"
                     htmlFor={field.name}
-                    style={{ color: textPrimary }}
+                    style={{ color: textPrimary, display: "flex", alignItems: "center" }}
                 >
                     {field.label}
+                    <InfoTooltip
+                        description={field.description}
+                        surfaceAlt={surfaceAlt}
+                        text={textPrimary}
+                        primary={primary}
+                    />
                 </label>
 
                 {field.type === "select" ? (
@@ -115,44 +125,6 @@ const Dashboard = () => {
             </div>
         );
     };
-
-    const threatFields = [
-        { label: "Threat Type", name: "Threat_Type", type: "select", options: ["Air", "Naval", "Cyber", "Missile", "Hybrid"] },
-        { label: "Enemy Unit Count", name: "enemy_unit_count", type: "number", min: 0 },
-        { label: "Threat Escalation (Hours)", name: "ThreatEscalationHours", type: "number", min: 0 },
-        { label: "Threat Distance (KM)", name: "Threat_Distance_KM", type: "number", min: 0, step: 0.1 },
-        { label: "Season", name: "Season", type: "select", options: ["Spring", "Summer", "Fall", "Winter"] },
-        { label: "Weather Severity", name: "Weather_Severity", type: "number", min: 0, step: 0.1 },
-    ];
-
-    const forceFields = [
-        "friendlyUnitCount",
-        "Aircraft_Count",
-        "satellite_coverage",
-        "LCS_COUNT",
-        "EW_Capabilities",
-        "Patriot_Batteries",
-        "ISR_AssetCount",
-        "cyber_defense_teams",
-        "operations_budget",
-        "budget_utilization_pct",
-    ].map((name) => ({
-        label: name.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
-        name,
-        type: "number",
-        min: 0,
-        ...(name === "budget_utilization_pct" ? { max: 100, step: 0.1 } : {}),
-    }));
-
-    const capabilityFields = [
-        { label: "Enemy Capability", name: "Enemy_Capability_Index", type: "number", min: 0, max: 10, step: 0.1 },
-        { label: "Joint Force Integration", name: "JointForceIntegration", type: "number", min: 0, max: 10, step: 0.1 },
-        { label: "Force Readiness", name: "force_readiness_score", type: "number", min: 0, max: 100, step: 0.1 },
-        { label: "Supply Chain Resilience", name: "supply_chain_resilience", type: "number", min: 0, max: 100, step: 0.1 },
-        { label: "Prior Engagements", name: "prior_engagements", type: "number", min: 0, max: 100, step: 1 },
-        { label: "Intel Confidence", name: "intel_confidence", type: "number", min: 0, max: 100, step: 0.1 },
-        { label: "ROE Complexity", name: "roe_complexity", type: "number", min: 0, max: 100, step: 0.1 },
-    ];
 
     return (
         <div
@@ -208,9 +180,7 @@ const Dashboard = () => {
 
             <form onSubmit={handleSubmit}>
                 <div className="grid-row grid-gap">
-                    {/* LEFT MAIN */}
                     <div className="grid-col-12 tablet:grid-col-8">
-                        {/* Threat & Environment */}
                         <Panel className="margin-bottom-3" $surface={surface} $text={textPrimary}>
                             <PanelHeader $muted={textMuted}>
                                 <h2>Threat &amp; Environment</h2>
