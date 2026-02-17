@@ -17,6 +17,30 @@ This repository is for Group 3 in Booz Allen's 2026 UNH Hackathon
 |--|-- main.py # Main file for the model server, contains API endpoints and logic to load and run the model
 ```
 
+## Frontend
+The `Frontend` directory contains the React dashboard for visualizing operational response plans and interacting with the API.
+
+### Running the Frontend
+1. Navigate to the `Frontend` directory:
+
+```bash
+cd Frontend
+```
+
+2. Install dependencies
+```bash
+npm install
+```
+# or if using yarn:
+# yarn install
+
+3. Start development server
+```bash
+npm start
+```
+
+4. The frontend will open at `http://localhost:3000` by default.
+
 ## Model Server
 The `model-server` directory contains the code for an API that exposes endpoints to run predictions using
 the model we develop. The `requirements.txt` file lists the dependencies needed to run the server, and the `main.py` 
