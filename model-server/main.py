@@ -2,9 +2,19 @@
 import fastapi
 from pydantic import BaseModel
 from typing import Optional, List
+from fastapi.middleware.cors import CORSMiddleware
 
 app = fastapi.FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class InferenceInput(BaseModel):
     Threat_Type: str
