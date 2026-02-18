@@ -30,7 +30,7 @@ def load_models():
     
     for threat_name in threat_types:
         for var_name in ['response_success', 'financial_loss', 'neutralization']:
-            model_path = models_dir / f"{threat_name}_{var_name}.pkl"
+            model_path = models_dir / f"{threat_name}_{var_name}_model.pkl"
             try:
                 with open(model_path, 'rb') as f:
                     MODELS[f"{threat_name}_{var_name}"] = pickle.load(f)
