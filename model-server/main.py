@@ -3,19 +3,50 @@ import fastapi
 from pydantic import BaseModel
 from typing import Optional, List
 from fastapi.middleware.cors import CORSMiddleware
+import pickle
+import numpy as np
+import pandas as pd
+from pathlib import Path
+
+# Global variable to store loaded models
+MODELS = {}
 
 app = fastapi.FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:*",
-        "http://127.0.0.1:*",
+        "http://localhost:3000",
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+def load_models():
+    """Load all trained models at startup."""
+    models_dir = Path("models")
+    threat_types = ['cyber', 'missile', 'hybrid', 'air', 'naval']
+    
+    for threat_name in threat_types:
+        model_path = models_dir / f"{threat_name}_model.pkl"
+        try:
+            with open(model_path, 'rb') as f:
+                MODELS[threat_name] = pickle.load(f)
+            print(f"Loaded model for {threat_name}")
+        except FileNotFoundError:
+            print(f"Warning: Model file not found for {threat_name}: {model_path}")
+    
+    if not MODELS:
+        print("WARNING: No models loaded! Please run train_models.py first.")
+    else:
+        print(f"Successfully loaded {len(MODELS)} models")
+
+
+@app.on_event("startup")
+async def startup_event():
+    """Load models when the server starts."""
+    load_models()
 
 class InferenceInput(BaseModel):
     Threat_Type: str
