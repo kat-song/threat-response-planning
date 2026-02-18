@@ -3,6 +3,10 @@ import fastapi
 from pydantic import BaseModel
 from typing import Optional, List
 from fastapi.middleware.cors import CORSMiddleware
+import pickle
+import numpy as np
+import pandas as pd
+from pathlib import Path
 
 app = fastapi.FastAPI()
 
@@ -15,14 +19,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-import pickle
-import numpy as np
-import pandas as pd
-from pathlib import Path
 
 # Global variable to store loaded models
 MODELS = {}
-
 
 def load_models():
     """Load all trained models at startup."""
@@ -30,13 +29,14 @@ def load_models():
     threat_types = ['cyber', 'missile', 'hybrid', 'air', 'naval']
     
     for threat_name in threat_types:
-        model_path = models_dir / f"{threat_name}_model.pkl"
-        try:
-            with open(model_path, 'rb') as f:
-                MODELS[threat_name] = pickle.load(f)
-            print(f"Loaded model for {threat_name}")
-        except FileNotFoundError:
-            print(f"Warning: Model file not found for {threat_name}: {model_path}")
+        for var_name in ['response_success', 'financial_loss', 'neutralization']:
+            model_path = models_dir / f"{threat_name}_{var_name}_model.pkl"
+            try:
+                with open(model_path, 'rb') as f:
+                    MODELS[f"{threat_name}_{var_name}"] = pickle.load(f)
+                print(f"Loaded model for {threat_name} {var_name}")
+            except FileNotFoundError:
+                print(f"Warning: Model file not found for {threat_name}: {model_path}")
     
     if not MODELS:
         print("WARNING: No models loaded! Please run train_models.py first.")
@@ -93,6 +93,21 @@ def normalize_threat_type(threat_type: str) -> str:
         return "missile"
     return threat_type
 
+def create_feature_vector(input_dict: dict, feature_names: List[str], median_values: dict) -> np.ndarray:
+    """Create feature vector in the correct order, handling missing values."""
+    features = []
+    for feature_name in feature_names:
+        if feature_name in input_dict:
+            value = input_dict[feature_name]
+            # Handle missing values with median imputation
+            if pd.isna(value):
+                value = median_values[feature_name]
+            features.append(value)
+        else:
+            # Use median if feature is missing
+            features.append(median_values[feature_name])
+    return np.array(features).reshape(1, -1)
+
 
 def predict_response_success(input_dict: dict, threat_type: str) -> tuple:
     """
@@ -105,31 +120,17 @@ def predict_response_success(input_dict: dict, threat_type: str) -> tuple:
     Returns:
         Tuple of (prediction, confidence)
     """
-    if threat_type not in MODELS:
-        raise ValueError(f"No model available for threat type: {threat_type}")
+    if f"{threat_type}_response_success" not in MODELS:
+        raise ValueError(f"No model named: {threat_type}_response_success")
     
-    model_package = MODELS[threat_type]
+    model_package = MODELS[f"{threat_type}_response_success"]
     scaler = model_package['scaler']
     pca = model_package['pca']
     model = model_package['model']
     feature_names = model_package['feature_names']
     median_values = model_package['median_values']
     
-    # Create feature vector in the correct order
-    features = []
-    for feature_name in feature_names:
-        if feature_name in input_dict:
-            value = input_dict[feature_name]
-            # Handle missing values with median imputation
-            if pd.isna(value):
-                value = median_values[feature_name]
-            features.append(value)
-        else:
-            # Use median if feature is missing
-            features.append(median_values[feature_name])
-    
-    # Convert to numpy array and reshape
-    X = np.array(features).reshape(1, -1)
+    X = create_feature_vector(input_dict, feature_names, median_values)
     
     # Apply transformations
     X_scaled = scaler.transform(X)
@@ -143,6 +144,71 @@ def predict_response_success(input_dict: dict, threat_type: str) -> tuple:
     confidence = probability[1] if prediction == 1 else probability[0]
     
     return int(prediction), float(confidence)
+
+
+def predict_financial_loss(input_dict: dict, threat_type: str) -> float:
+    """
+    Predict financial loss for a given input.
+    
+    Args:
+        input_dict: Dictionary of feature values
+        threat_type: Normalized threat type name
+    Returns:
+        Predicted financial loss in millions USD
+    """
+
+    if f"{threat_type}_financial_loss" not in MODELS:
+        raise ValueError(f"No model named: {threat_type}_financial_loss")
+    
+    model_package = MODELS[f"{threat_type}_financial_loss"]     
+    scaler = model_package['scaler']
+    pca = model_package['pca']
+    model = model_package['model']
+    feature_names = model_package['feature_names']
+    median_values = model_package['median_values']
+
+    X = create_feature_vector(input_dict, feature_names, median_values)
+
+    # Apply transformations
+    X_scaled = scaler.transform(X)
+    X_pca = pca.transform(X_scaled)
+
+    # Get prediction
+    prediction = model.predict(X_pca)[0]
+
+    return float(prediction) 
+
+
+def predict_days_to_stabilization(input_dict: dict, threat_type: str) -> float:
+    """
+    Predict days to stabilization for a given input.
+    
+    Args:
+        input_dict: Dictionary of feature values
+        threat_type: Normalized threat type name
+    Returns:
+        Predicted days to stabilization
+    """
+    if f"{threat_type}_neutralization" not in MODELS:
+        raise ValueError(f"No model named: {threat_type}_neutralization")
+    
+    model_package = MODELS[f"{threat_type}_neutralization"]
+    scaler = model_package['scaler']
+    pca = model_package['pca']
+    model = model_package['model']
+    feature_names = model_package['feature_names']
+    median_values = model_package['median_values']
+
+    X = create_feature_vector(input_dict, feature_names, median_values)
+
+    # Apply transformations
+    X_scaled = scaler.transform(X)
+    X_pca = pca.transform(X_scaled)
+
+    # Get prediction
+    prediction = model.predict(X_pca)[0]
+
+    return float(prediction) 
 
 
 @app.post("/inference")
@@ -193,15 +259,15 @@ async def inference(input_data: List[InferenceInput]) -> List[InferenceOutput]:
             "Theater Distance KM": input_item.Theater_Distance_KM,
         }
         
-        # Predict response success
+        # Predict response success, financial loss, and days to stabilization
         prediction, confidence = predict_response_success(input_dict, threat_type)
+        financial_loss_prediction = predict_financial_loss(input_dict, threat_type)
+        days_to_stabilization_prediction = predict_days_to_stabilization(input_dict, threat_type)
         
         # Create output
-        # Note: Financial_Loss_MUSD and actual_days_to_stabilization are placeholders
-        # These would need separate models to predict
         results.append(InferenceOutput(
-            Financial_Loss_MUSD=0.0,  # Placeholder - would need separate model
-            actual_days_to_stabilization=0.0,  # Placeholder - would need separate model
+            Financial_Loss_MUSD=float(financial_loss_prediction),
+            actual_days_to_stabilization=float(days_to_stabilization_prediction),
             response_success=bool(prediction),
             response_success_confidence=float(confidence)
         ))
