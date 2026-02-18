@@ -128,8 +128,8 @@ def predict_response_success(input_dict: dict, threat_type: str) -> tuple:
             # Use median if feature is missing
             features.append(median_values[feature_name])
     
-    # Convert to numpy array and reshape
-    X = np.array(features).reshape(1, -1)
+    # Convert to DataFrame to preserve feature names (matches training)
+    X = pd.DataFrame([features], columns=feature_names)
     
     # Apply transformations
     X_scaled = scaler.transform(X)
