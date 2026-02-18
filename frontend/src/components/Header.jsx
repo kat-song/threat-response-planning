@@ -34,26 +34,6 @@ const StyledMenu = styled.div`
   }
 `;
 
-const TitleSpan = styled.span`
-  color: ${(props) => props.theme?.colors?.text.baseDarkest};
-  font-size: 2rem !important;
-  font-weight: 900 !important;
-  margin-top: 2px;
-  text-transform: uppercase;
-
-  @media (width >= 1024px) {
-    margin-bottom: -4px;
-  }
-`;
-
-const SubtitleSpan = styled.span`
-  color: ${(props) => props.theme?.colors?.text.baseAccent};
-  text-transform: uppercase;
-  font-weight: 900 !important;
-  letter-spacing: 1.5px;
-  font-size: 0.8rem;
-`;
-
 const StyledTitle = styled(Title)`
   margin: 0;
   padding: 7px 0;
@@ -62,7 +42,7 @@ const StyledTitle = styled(Title)`
 const StyledUSWDSHeader = styled(USWDSHeader)`
   border-bottom: 1px solid ${(props) => props.theme?.colors?.bg.baseLight};
   background-color: ${(props) =>
-    props.$isDark ? props.theme?.colors?.bg.baseDarkest : props.theme?.colors?.bg.baseDarker};
+        props.$isDark ? props.theme?.colors?.bg.baseDarkest : props.theme?.colors?.bg.baseDarker};
   transition: background-color 200ms ease, border-color 200ms ease;
 
   @media (width >= 1024px) {
@@ -86,7 +66,7 @@ const StyledImg = styled.img`
 const StyledContainer = styled.div`
   z-index: 2;
   background-color: ${(props) =>
-    props.$isDark ? props.theme?.colors?.bg.baseDarkest : props.theme?.colors?.bg.baseDarker};
+        props.$isDark ? props.theme?.colors?.bg.baseDarkest : props.theme?.colors?.bg.baseDarker};
   transition: background-color 200ms ease;
 `;
 
@@ -98,35 +78,40 @@ const StyledNavbar = styled.div`
   border: 0;
 `;
 
-const ToggleButton = styled(Button)`
+const ThemeToggle = styled.button`
+  position: relative;
+  width: 52px;
+  height: 28px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  background: ${(props) =>
+        props.$isDark
+            ? props.theme?.colors?.primary
+            : props.theme?.colors?.bg.baseLight};
+  transition: background 200ms ease;
+
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.4rem 0.85rem;
-  border-radius: 999px;
-  border: 1px solid ${(props) => props.theme?.colors?.bg.base};
-  background: ${(props) => props.theme?.colors?.bg.baseLightest};
-  color: ${(props) => props.theme?.colors?.text.baseDarkest};
-  font-size: 0.85rem;
-  line-height: 1.1;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
-  cursor: pointer;
+  padding: 3px;
 
-  &:hover {
-    background: ${(props) => props.theme?.colors?.primaryLightest};
-    border-color: ${(props) => props.theme?.colors?.primary};
+  &:focus {
+    outline: 2px solid ${(props) => props.theme?.colors?.primary};
+    outline-offset: 2px;
   }
 `;
 
-const ToggleDot = styled.span`
-  display: inline-block;
-  width: 12px;
-  height: 12px;
+const ToggleThumb = styled.div`
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  background: ${(props) =>
-    props.$isDark ? props.theme?.colors?.primary : props.theme?.colors?.bg.base};
-  border: 1px solid ${(props) => props.theme?.colors?.primaryDark};
+  background: ${(props) => props.theme?.colors?.bg.baseLightest};
+  transition: transform 200ms ease;
+
+  transform: ${(props) =>
+        props.$isDark ? 'translateX(24px)' : 'translateX(0)'};
 `;
+
 
 const Header = () => {
     const theme = useTheme();
@@ -157,22 +142,34 @@ const Header = () => {
                     </StyledNavbar>
                     <div className="usa-navbar__secondary margin-left-auto margin-bottom-2px display-flex flex-align-center">
                         <UserInfoContainer>
-                            <ToggleButton type="button" unstyled onClick={toggleTheme} aria-label="Toggle color theme">
-                                <ToggleDot $isDark={isDark} />
-                                <span>{isDark ? 'Dark' : 'Light'} mode</span>
-                            </ToggleButton>
+                            <ThemeToggle
+                                type="button"
+                                onClick={toggleTheme}
+                                $isDark={isDark}
+                                aria-label="Toggle dark mode"
+                            >
+                                <ToggleThumb $isDark={isDark} />
+                            </ThemeToggle>
+                            <span className="usa-sr-only">
+                                {isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+                            </span>
+
+
                         </UserInfoContainer>
                         <StyledMenu className="display-flex flex-align-center">
-                            <ToggleButton
+                            <ThemeToggle
                                 type="button"
-                                unstyled
                                 onClick={toggleTheme}
-                                aria-label="Toggle color theme (mobile)"
-                                style={{ marginRight: 8 }}
+                                $isDark={isDark}
+                                aria-label="Toggle dark mode"
                             >
-                                <ToggleDot $isDark={isDark} />
-                                <span>{isDark ? 'Dark' : 'Light'}</span>
-                            </ToggleButton>
+                                <ToggleThumb $isDark={isDark} />
+                            </ThemeToggle>
+                            <span className="usa-sr-only">
+                                {isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+                            </span>
+
+
                             <Button type="button" title="toggle menu" unstyled>
                                 <svg
                                     className="usa-icon"
