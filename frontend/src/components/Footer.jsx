@@ -1,4 +1,4 @@
-import { Address, Footer, FooterNav, Logo } from '@trussworks/react-uswds';
+import { Address, Footer, FooterNav } from '@trussworks/react-uswds';
 
 const AppFooter = () => {
     return (
