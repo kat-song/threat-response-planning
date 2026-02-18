@@ -5,6 +5,8 @@ export const threatFields = [
     { label: "Threat Distance (KM)", name: "Threat_Distance_KM", type: "number", min: 0, step: 0.1, description: "Distance of threat from friendly forces in kilometers." },
     { label: "Season", name: "Season", type: "select", options: ["Spring", "Summer", "Fall", "Winter"], description: "Current season affecting operational tempo." },
     { label: "Weather Severity", name: "Weather_Severity", type: "number", min: 0, step: 0.1, description: "Numeric index of weather severity in the area." },
+    { label: "Response Time (Hours)", name: "ResponseTime_hrs", type: "number", min: 0, step: 0.1, description: "Time (in hours) elapsed between threat detection and the initiation of the response." },
+    { label: "Logistics Delay (Hours)", name: "logistics_delay_hours", type: "number", min: 0, step: 0.1, description: "Estimated delay introduced by logistical constraints." },
 ];
 
 export const forceFields = [
