@@ -1,24 +1,28 @@
 # UNH-Hackathon-2026-Group-3
-This repository is for Group 3 in Booz Allen's 2026 UNH Hackathon 
+This project originally started as an entry in Booz Allen's 2026 UNH Hackathon, winning second place overall. I'm continuing to build it out, implementing judges' suggestions and new ideas. Original repo: https://github.com/schiffman-ben/UNH-Hackathon-2026-Group-3/tree/main
+
+Resources
 
 
 ## Structure
 ```{code}
 |-- Data                                  # For data and data dictionary storage. May add subdirectories
-|  |-- unh_hackathon_prompt_2_data.json   
-|  |-- Prompt 2 Data Dictionary.pdf       
-|-- Notebooks                             # For data exploration and manipulation
-|  |-- data_correllation_exploration.ipynb
-|-- Frontend                              # Placeholder for whatever we create as our frontend deliverable
+|   |-- unh_hackathon_prompt_2_data.json   
+|   |-- Prompt 2 Data Dictionary.pdf  
+|-- docs # Contains documentation for the project     
+|-- frontend                              
+|-- model-server # API that exposes endpoints to run predictions
+|   |-- requirements.txt # Dependencies for the model server
+|   |-- main.py # Main file for the model server, contains API endpoints and logic to load and run the model
+|-- notebooks                             # For data exploration and manipulation
+|   |-- data_correllation_exploration.ipynb
+|-- utils
+|-- docker-compose.yml
 |-- README.md
-|--docs # Contains documentation for the project
-|--model-server # API that exposes endpoints to run predictions
-|--|-- requirements.txt # Dependencies for the model server
-|--|-- main.py # Main file for the model server, contains API endpoints and logic to load and run the model
 ```
 
 ## Frontend
-The `Frontend` directory contains the React dashboard for visualizing operational response plans and interacting with the API.
+The `frontend` directory contains the React dashboard for visualizing operational response plans and interacting with the API.
 
 ### Running the Frontend
 1. Navigate to the `Frontend` directory:
@@ -86,3 +90,22 @@ The response will be the predictions generated, like:
     ...
 ]
 ```
+## Notebooks 
+The notebooks are where data and models are explored. Model metrics are also calculated in a separate notebook. 
+
+## TODO: 
+- Clean up frontend 
+    - Add min and max ranges which appead in the info section, as well as bound user input (see frontend>data>fields.js)
+    - Remove DOW logo (liability reasonsss)
+- Figure out how to host website on Github Pages 
+- Clean up notebooks and model server by adding functions to utils.py 
+- Consolidate model metrics in notebooks and READMEs 
+- Improve models 
+    - Prevent negative numbers with logistic transform 
+- Add optimization / recommendations 
+    - k-nearest neighbors ?? or some kind of clustering 
+    - Implement NSGA-II 
+    - Explore other industrial algorithms (forgot which ones the guy mentioned but yeah) 
+- Add frontend features 
+    - Model explainability (confidence score, color signals, significant features )
+    - Page with model metrics 
