@@ -1,20 +1,21 @@
-# UNH-Hackathon-2026-Group-3
+# TORPedo: Threat Operational Response Prediction Tool 
+Using TORPedo, threat response operations can be planned with a newfound predictive precision. TORPedo allows the user to use any information about a new threat to predict the (probability of) success of a mission and its associated costs and days to stabilization. The tool will also predict the optimal allocation of forces to deploy, and give outcomes of similar missions in the past. The underlying models rely on a dataset sourced from __ask david__. 
+
 This project originally started as an entry in Booz Allen's 2026 UNH Hackathon, winning second place overall. I'm continuing to build it out, implementing judges' suggestions and new ideas. Original repo: https://github.com/schiffman-ben/UNH-Hackathon-2026-Group-3/tree/main
 
-Resources
-
+The original prompt: Joint Commands require real-time decision intelligence to counter emerging threats. Build a risk assessment tool that transforms historical threat engagement into actionable predictions. Prevent costly mission failures. Optimize warfighter deployment. Dominate the decision space. 
 
 ## Structure
 ```{code}
-|-- Data                                  # For data and data dictionary storage. May add subdirectories
+|-- Data                                  
 |   |-- unh_hackathon_prompt_2_data.json   
 |   |-- Prompt 2 Data Dictionary.pdf  
-|-- docs # Contains documentation for the project     
+|-- docs # misc documentation for the project     
 |-- frontend                              
 |-- model-server # API that exposes endpoints to run predictions
-|   |-- requirements.txt # Dependencies for the model server
-|   |-- main.py # Main file for the model server, contains API endpoints and logic to load and run the model
-|-- notebooks                             # For data exploration and manipulation
+|   |-- requirements.txt # dependencies for the model server
+|   |-- main.py # contains API endpoints and logic to load and run the model
+|-- notebooks                             # data exploration and manipulation
 |   |-- data_correllation_exploration.ipynb
 |-- utils
 |-- docker-compose.yml
