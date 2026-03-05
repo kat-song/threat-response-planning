@@ -13,7 +13,7 @@ export const runInference = async (formData) => {
             ISR_AssetCount: formData.ISR_AssetCount,
             satellite_coverage_score: formData.satellite_coverage,
             JointForceIntegration: formData.JointForceIntegration,
-            EW_Capability: formData.EW_Capabilities,
+            EW_Capability: formData.EW_Capability,
             Supply_Chain_Resilience: formData.supply_chain_resilience,
             PriorEngagements: formData.prior_engagements,
             force_readiness_score: formData.force_readiness_score,

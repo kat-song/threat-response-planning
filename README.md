@@ -29,15 +29,15 @@ The `frontend` directory contains the React dashboard for visualizing operationa
 1. Navigate to the `Frontend` directory:
 
 ```bash
-cd Frontend
+cd frontend
 ```
 
 2. Install dependencies
 ```bash
 npm install
+# or if using yarn: 
+yarn install
 ```
-# or if using yarn:
-# yarn install
 
 3. Start development server
 ```bash
