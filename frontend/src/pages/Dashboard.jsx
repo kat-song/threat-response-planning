@@ -43,6 +43,68 @@ const Dashboard = () => {
     const [formData, setFormData] = useState({});
     const [submitted, setSubmitted] = useState(false);
 
+    // Generate random but valid values for each field based on metadata
+    // Returns the generated object so callers can use it immediately (avoids waiting for setState)
+    const randomizeForm = () => {
+        const allFields = [...threatFields, ...forceFields, ...capabilityFields];
+        const next = {};
+
+        const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+        allFields.forEach((f) => {
+            // selects
+            if (f.type === "select") {
+                next[f.name] = pick(f.options);
+                return;
+            }
+
+            // numbers (default behavior)
+            const min = typeof f.min === "number" ? f.min : 0;
+            const max = typeof f.max === "number" ? f.max : Math.max(min + 10, 100);
+            const step = typeof f.step === "number" ? f.step : 1;
+
+            let val = Math.random() * (max - min) + min;
+            if (step >= 1) {
+                val = Math.round(val);
+            } else {
+                // round to nearest step
+                val = Math.round(val / step) * step;
+            }
+
+            next[f.name] = val;
+        });
+
+        // Ensure keys that the backend expects but may have different names are set
+        // (mapping used by runInference)
+        // e.g., `operations_budget` -> `Operational_Budget_MUSD` is mapped inside runInference,
+        // so we populate `operations_budget` here because that's the form field name.
+
+        setFormData((prev) => ({ ...prev, ...next }));
+        setSubmitted(false);
+        return next;
+    };
+
+    const randomizeAndRun = async () => {
+        const next = randomizeForm();
+
+        try {
+            const result = await runInference(next);
+            const inference = result[0];
+
+            setFormData((prev) => ({
+                ...prev,
+                ...next,
+                Financial_Loss_MUSD: inference.Financial_Loss_MUSD,
+                days_to_stabilization: inference.actual_days_to_stabilization,
+                response_success: inference.response_success ? "SUCCESS" : "FAILURE",
+            }));
+
+            setSubmitted(true);
+        } catch (err) {
+            console.error("Randomize+Run failed:", err);
+        }
+    };
+
     const handleChange = (e) => {
         const { name, value, type } = e.target;
         setFormData((prev) => ({
@@ -86,6 +148,7 @@ const Dashboard = () => {
                 boxShadow: "none",
                 outline: "none",
             },
+            value: formData[field.name] ?? "",
         };
 
         return (
@@ -144,6 +207,11 @@ const Dashboard = () => {
                         >
                             Configure threat assessment and force posture for response planning.
                         </p>
+                        <div style={{ marginTop: "0.5rem" }}>
+                            <Button type="button" onClick={randomizeAndRun} style={{ marginRight: "0.5rem" }}>
+                                Randomize Inputs
+                            </Button>
+                        </div>
                     </div>
 
                     <div className="grid-col-12 tablet:grid-col-4">
