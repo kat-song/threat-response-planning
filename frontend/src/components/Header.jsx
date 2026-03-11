@@ -117,7 +117,6 @@ const Header = () => {
     const theme = useTheme();
     const { themeName, toggleTheme } = useThemeContext();
     const isDark = themeName === 'dark';
-    const logoSrc = isDark ? '/DOW-Logo-Dark.png' : '/DOW-Logo-Light.png';
 
     return (
         <StyledContainer $isDark={isDark}>
@@ -127,15 +126,7 @@ const Header = () => {
                     <StyledNavbar className="usa-navbar">
                         <StyledTitle>
                             <StyledLink to="/" key="nav_link_home" className="display-flex flex-align-center">
-                                <span className="margin-right-1">
-                                    {
-                                        <StyledImg
-                                            className="width-100 desktop:width-100 text-bottom margin-right-05"
-                                            src={logoSrc}
-                                            alt="Department of Workforce logo"
-                                        />
-                                    }
-                                </span>
+                                <span>TORPedo</span>
                             </StyledLink>
                         </StyledTitle>
                         <NavMenuButton label={'Menu'} />

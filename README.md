@@ -96,8 +96,8 @@ The notebooks are where data and models are explored. Model metrics are also cal
 
 ## TODO: 
 - Clean up frontend 
-    - Add min and max ranges which appead in the info section, as well as bound user input (see frontend>data>fields.js)
-    - Remove DOW logo (liability reasonsss)
+    - ~~Add min and max ranges which appead in the info section, as well as bound user input (see frontend>data>fields.js)~~
+    - ~~Remove DOW logo (liability reasonsss)~~
 - Figure out how to host website on Github Pages 
 - Clean up notebooks and model server by adding functions to utils.py 
 - Consolidate model metrics in notebooks and READMEs 
