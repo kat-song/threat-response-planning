@@ -1,3 +1,5 @@
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
+
 export const runInference = async (formData) => {
     const payload = [
         {
@@ -29,7 +31,7 @@ export const runInference = async (formData) => {
             Season: formData.Season,
         }];
 
-    const response = await fetch("http://localhost:8000/inference", {
+    const response = await fetch("${API_URL}/inference", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

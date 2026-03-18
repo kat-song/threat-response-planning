@@ -11,7 +11,7 @@ def load_predictive_warfighting_data(file_path: str = "unh_hackathon_prompt_2_da
     """Load data from a CSV file into a pandas DataFrame."""
     return pd.read_json(file_path) 
 
-def load_and_clean_data(file_path: str) -> pd.DataFrame:
+def load_and_clean_warfighting_data(file_path: str) -> pd.DataFrame:
     """Load and clean the data."""
     df = pd.read_json(file_path)
     
