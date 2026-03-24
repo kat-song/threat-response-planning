@@ -31,7 +31,7 @@ export const runInference = async (formData) => {
             Season: formData.Season,
         }];
 
-    const response = await fetch(`${API_URL}/inference`, {
+    const response = await fetch(API_URL + "/inference", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

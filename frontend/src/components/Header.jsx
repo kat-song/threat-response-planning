@@ -54,15 +54,6 @@ const StyledUSWDSHeader = styled(USWDSHeader)`
   }
 `;
 
-const StyledImg = styled.img`
-  max-width: 300px;
-
-  @media (width <= 1023px) {
-    margin-left: 10px;
-    width: 200px;
-  }
-`;
-
 const StyledContainer = styled.div`
   z-index: 2;
   background-color: ${(props) =>
