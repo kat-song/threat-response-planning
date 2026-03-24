@@ -31,16 +31,23 @@ export const runInference = async (formData) => {
             Season: formData.Season,
         }];
 
-    const response = await fetch("${API_URL}/inference", {
+    const response = await fetch(`${API_URL}/inference`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
     });
-
     if (!response.ok) {
-        throw new Error("Inference request failed");
+        const text = await response.text();
+        let message = `Inference request failed: ${response.status} ${response.statusText}`;
+        try {
+            const json = JSON.parse(text);
+            message += ` - ${JSON.stringify(json)}`;
+        } catch (err) {
+            message += ` - ${text}`;
+        }
+        throw new Error(message);
     }
 
     return response.json();

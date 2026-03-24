@@ -1,5 +1,5 @@
 import { Button, GovBanner, NavMenuButton, Title, Header as USWDSHeader } from '@trussworks/react-uswds';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { styled, useTheme } from 'styled-components';
 import { useThemeContext } from '../context/Theme';
 

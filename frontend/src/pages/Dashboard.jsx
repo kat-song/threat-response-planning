@@ -97,6 +97,7 @@ const Dashboard = () => {
                 Financial_Loss_MUSD: inference.Financial_Loss_MUSD,
                 days_to_stabilization: inference.actual_days_to_stabilization,
                 response_success: inference.response_success ? "SUCCESS" : "FAILURE",
+                response_success_confidence: inference.response_success_confidence,
             }));
 
             setSubmitted(true);
@@ -127,12 +128,37 @@ const Dashboard = () => {
                 Financial_Loss_MUSD: inference.Financial_Loss_MUSD,
                 days_to_stabilization: inference.actual_days_to_stabilization,
                 response_success: inference.response_success ? "SUCCESS" : "FAILURE",
+                response_success_confidence: inference.response_success_confidence,
             }));
 
             setSubmitted(true);
         } catch (error) {
             console.error(error);
         }
+    };
+
+    const formatDays = (days) => {
+        if (days === null || days === undefined || days === "") return "—";
+        const value = Number(days);
+        if (Number.isNaN(value)) return "—";
+        return Math.round(value);
+    };
+
+    const formatLoss = (loss) => {
+        if (loss === null || loss === undefined || loss === "") return "—";
+        const value = Number(loss);
+        if (Number.isNaN(value)) return "—";
+        return value.toFixed(1);
+    };
+
+    const getSuccessColor = (confidence) => {
+        if (confidence === null || confidence === undefined || Number.isNaN(Number(confidence))) {
+            return textPrimary;
+        }
+        const v = Math.max(0, Math.min(1, Number(confidence)));
+        // Red at 0, green at 1, smooth spectrum
+        const hue = Math.round(0 + v * 120);
+        return `hsl(${hue}, 85%, 42%)`;
     };
 
     const renderField = (field) => {
@@ -332,8 +358,16 @@ const Dashboard = () => {
                                         <div className="text-base text-bold" style={{ color: textPrimary }}>
                                             Response Success
                                         </div>
-                                        <div className="font-sans-2xl text-bold kpiValue" style={{ color: textPrimary }}>
+                                        <div
+                                            className="font-sans-2xl text-bold kpiValue"
+                                            style={{ color: getSuccessColor(formData.response_success_confidence) }}
+                                        >
                                             {formData.response_success || "—"}
+                                        </div>
+                                        <div className="text-base" style={{ color: textPrimary }}>
+                                            {formData.response_success_confidence !== undefined && formData.response_success_confidence !== null
+                                                ? `${(Number(formData.response_success_confidence) * 100).toFixed(1)}% confidence`
+                                                : "—"}
                                         </div>
                                         <div className="text-base subtle" style={{ color: textMuted }}>
                                             Projected mission outcome probability.
@@ -345,7 +379,7 @@ const Dashboard = () => {
                                             Financial Loss (MUSD)
                                         </div>
                                         <div className="font-sans-2xl text-bold kpiValue" style={{ color: textPrimary }}>
-                                            {formData.Financial_Loss_MUSD || "—"}
+                                            {formatLoss(formData.Financial_Loss_MUSD)}
                                         </div>
                                         <div className="text-base subtle" style={{ color: textMuted }}>
                                             Estimated loss given current posture.
@@ -357,7 +391,7 @@ const Dashboard = () => {
                                             Days to Stabilization
                                         </div>
                                         <div className="font-sans-2xl text-bold kpiValue" style={{ color: textPrimary }}>
-                                            {formData.days_to_stabilization || "—"}
+                                            {formatDays(formData.days_to_stabilization)}
                                         </div>
                                         <div className="text-base subtle" style={{ color: textMuted }}>
                                             Time to stable operating conditions.

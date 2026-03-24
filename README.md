@@ -6,24 +6,49 @@ This project originally started as an entry in Booz Allen's 2026 UNH Hackathon, 
 The original prompt: Joint Commands require real-time decision intelligence to counter emerging threats. Build a risk assessment tool that transforms historical threat engagement into actionable predictions. Prevent costly mission failures. Optimize warfighter deployment. Dominate the decision space. 
 
 ## Structure
-```{code}
-|-- Data                                  
-|   |-- unh_hackathon_prompt_2_data.json   
-|   |-- Prompt 2 Data Dictionary.pdf  
-|-- docs # misc documentation for the project     
-|-- frontend                              
-|-- model-server # API that exposes endpoints to run predictions
-|   |-- requirements.txt # dependencies for the model server
-|   |-- main.py # contains API endpoints and logic to load and run the model
-|-- notebooks                             # data exploration and manipulation
-|   |-- data_correllation_exploration.ipynb
-|-- utils
-|-- docker-compose.yml
-|-- README.md
 ```
+threat-response-planning/
+├── Data/
+│   └── unh_hackathon_prompt_2_data.json
+├── docs/
+│   └── data_dictionary.md
+├── frontend/                          # React dashboard application
+│   ├── src/
+│   │   ├── components/                # Reusable UI components
+│   │   ├── pages/                     # Main dashboard page
+│   │   ├── services/                  # API integration
+│   │   └── data/                      # Form field configurations
+│   ├── package.json                   # Frontend dependencies
+│   └── README.md                      # Frontend-specific documentation
+├── model-server/                      # FastAPI server for ML predictions
+│   ├── main.py                        # API endpoints and model loading
+│   ├── requirements.txt               # Python dependencies
+│   ├── models/                        # Trained model files
+│   ├── train_models.py                # Model training scripts
+│   ├── evaluate_models.py             # Model evaluation and metrics
+│   └── README.md                      # Model server documentation
+├── notebooks/                         # Data exploration and analysis
+│   ├── data_exploration.ipynb
+│   ├── financial_loss_model_nn.ipynb
+│   ├── model_metrics.ipynb
+│   └── success_classification.ipynb
+├── utils/                             # Shared utilities
+├── docker-compose.yml                 # Multi-service orchestration
+└── README.md                          # This file
+```
+## Development
+1. Activate virtual environment with `source .venv/bin/activate`
+2. To run website locally, frontend and model server can be run in any order. 
 
 ## Frontend
 The `frontend` directory contains the React dashboard for visualizing operational response plans and interacting with the API.
+
+### Features
+- **Interactive Dashboard**: Configure threat scenarios and view real-time predictions
+- **Model Explainability**: Color-coded confidence indicators (red→green spectrum) and percentage scores
+- **Smart Formatting**: Whole numbers for days, 1-decimal precision for financial estimates
+- **Random Scenario Generation**: One-click input randomization for testing
+- **USWDS Design System**: Accessible, government-standard UI components
 
 ### Running the Frontend
 1. Navigate to the `Frontend` directory:
@@ -35,7 +60,7 @@ cd frontend
 2. Install dependencies
 ```bash
 npm install
-# or if using yarn: 
+# or if using yarn:
 yarn install
 ```
 
@@ -54,7 +79,7 @@ file contains the main logic for loading the model and handling API requests.
 To run the model server, navigate to the `model-server` directory and install the dependencies using:
 ```bash
 python -m venv venv  # Create a virtual environment (optional but recommended)
-source venv/bin/activate  # Activate the virtual environment (Linux/Mac)
+source .venv/bin/activate  # Activate the virtual environment (Linux/Mac)
 # For Windows, use: venv\Scripts\activate
 pip install -r requirements.txt
 ``` 
@@ -86,7 +111,8 @@ The response will be the predictions generated, like:
     {
       "Financial_Loss_MUSD": 100.0,
       "actual_days_to_stabilization": 30,
-      "response_success": true
+      "response_success": true,
+      "response_success_confidence": 0.85
     },
     ...
 ]
